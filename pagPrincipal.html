@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido a CStats</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        h1, h2, h3 {
+            color: #ffca28;
+        }
+
+        a {
+            text-decoration: none;
+            color: #ff5722;
+        }
+
+        a:hover {
+            color: #ff784e;
+        }
+
+        .carousel {
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .carousel .slick-slide {
+            display: flex !important;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 500px;
+            background: linear-gradient(135deg, #1c1c1c, #121212);
+        }
+
+        .carousel img {
+            max-width: 100%;
+            max-height: 70%;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .slide-content {
+            text-align: center;
+            margin-top: 20px;
+            padding: 0 20px;
+            max-width: 800px;
+        }
+
+        .slide-content h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .slide-content p {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .slide-content .btn {
+            padding: 10px 20px;
+            background-color: #ff5722;
+            color: white;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .slide-content .btn:hover {
+            background-color: #ff784e;
+        }
+
+        nav {
+            background-color: #1c1c1c;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            color: #e0e0e0;
+            text-decoration: none;
+            margin: 0 10px;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #ff5722;
+        }
+
+        .btn-logout {
+            padding: 10px 20px;
+            background-color: #ff5722;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background-color: #ff784e;
+        }
+
+        .intro {
+            text-align: center;
+            padding: 50px 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .intro h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .intro p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .features {
+            display: flex;
+            justify-content: space-around;
+            padding: 50px 20px;
+            background-color: #1c1c1c;
+        }
+
+        .feature {
+            text-align: center;
+            max-width: 300px;
+            padding: 20px;
+            background-color: #282828;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        }
+
+        .feature i {
+            font-size: 3rem;
+            color: #ff5722;
+            margin-bottom: 15px;
+        }
+
+        .feature h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .testimonials {
+            padding: 50px 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            text-align: center;
+        }
+
+        .testimonial {
+            max-width: 600px;
+            margin: 0 auto 30px;
+            padding: 20px;
+            background-color: #282828;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .testimonial p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .testimonial span {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #ffca28;
+        }
+
+        .team {
+            padding: 50px 20px;
+            background-color: #1c1c1c;
+            text-align: center;
+        }
+
+        .team h2 {
+            font-size: 2rem;
+            margin-bottom: 40px;
+        }
+
+        .team-members {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+
+        .team-member {
+            max-width: 250px;
+            margin: 20px;
+            padding: 20px;
+            background-color: #282828;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+        }
+
+        .team-member img {
+            width: 100%;
+            border-radius: 50%;
+            margin-bottom: 15px;
+        }
+
+        .team-member h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .team-member p {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .cta {
+            text-align: center;
+            padding: 50px 20px;
+            background-color: #1c1c1c;
+        }
+
+        .cta h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .cta .btn-login {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #ff5722;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1.2rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .cta .btn-login:hover {
+            background-color: #ff784e;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        .slick-prev, .slick-next {
+            display: none !important;
+        }
+
+        .slick-dots {
+            display: none !important;
+        }
+
+        .animate__animated {
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <img src="img/logo-removebg-preview.png" alt="Logo" height="50">
+        </div>
+        <div class="navigation">
+            <a href="principal.php">Inicio</a>
+            <a href="estadisticas.php">Estadísticas</a>
+            <a href="partidas.php">Partidas</a>
+            <a href="estrategias.php">Estrategias</a>
+            <a href="feedback.php">Feedback</a>
+        </div>
+        <a href="index.php" class="btn-logout">Iniciar sesión</a>
+    </nav>
+
+    <div class="carousel">
+        <div>
+            <img src="img/cs2.jpg" alt="Característica 1">
+            <div class="slide-content animate__animated animate__fadeIn">
+                <h2>Domina el Juego</h2>
+                <p>Analiza tus partidas y mejora tu rendimiento con estadísticas avanzadas.</p>
+                <a href="#features" class="btn">Ver Características</a>
+            </div>
+        </div>
+        <div>
+            <img src="img/cs21.jpeg" alt="Característica 2">
+            <div class="slide-content animate__animated animate__fadeIn">
+                <h2>Feedback Profesional</h2>
+                <p>Recibe comentarios de entrenadores expertos para llevar tu juego al siguiente nivel.</p>
+                <a href="#testimonials" class="btn">Ver Testimonios</a>
+            </div>
+        </div>
+        <div>
+            <img src="img/stats.png" alt="Característica 3">
+            <div class="slide-content animate__animated animate__fadeIn">
+                <h2>Estrategias Ganadoras</h2>
+                <p>Planifica tácticas efectivas basadas en datos reales.</p>
+                <a href="#team" class="btn">Conoce al Equipo</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="intro animate__animated animate__fadeIn">
+        <h1>Bienvenido a CStats</h1>
+        <p>
+            CStats es la herramienta definitiva para analizar y mejorar tu rendimiento en Counter-Strike 2.
+            Registra tus partidas, revisa estadísticas detalladas y recibe feedback de entrenadores para llevar
+            tu juego al siguiente nivel.
+        </p>
+    </div>
+
+    <div class="features">
+        <div class="feature animate__animated animate__fadeInLeft">
+            <i class="fas fa-chart-line"></i>
+            <h3>Estadísticas Detalladas</h3>
+            <p>Analiza tu rendimiento con gráficos y métricas avanzadas.</p>
+        </div>
+        <div class="feature animate__animated animate__fadeInUp">
+            <i class="fas fa-users"></i>
+            <h3>Feedback de Entrenadores</h3>
+            <p>Recibe comentarios personalizados para mejorar tu juego.</p>
+        </div>
+        <div class="feature animate__animated animate__fadeInRight">
+            <i class="fas fa-trophy"></i>
+            <h3>Mejora Competitiva</h3>
+            <p>Lleva tu equipo al siguiente nivel con estrategias basadas en datos.</p>
+        </div>
+    </div>
+
+    <div class="testimonials animate__animated animate__fadeIn">
+        <h2>Lo que dicen nuestros usuarios</h2>
+        <div class="testimonial">
+            <p>"CStats ha cambiado completamente la forma en que entrenamos. ¡Increíble herramienta!"</p>
+            <span>- Juan Pérez, Jugador Profesional</span>
+        </div>
+        <div class="testimonial">
+            <p>"Gracias a CStats, hemos identificado áreas clave para mejorar y hemos ganado más partidas."</p>
+            <span>- Ana Gómez, Entrenadora</span>
+        </div>
+    </div>
+
+    <div class="team animate__animated animate__fadeIn">
+        <h2>Nuestro Equipo</h2>
+        <div class="team-members">
+            <div class="team-member">
+                <img src="img/team1.jpg" alt="Miembro del equipo 1">
+                <h3>Francisco Penín</h3>
+                <p>Desarrollador Principal</p>
+            </div>
+            <div class="team-member">
+                <img src="img/team2.jpg" alt="Miembro del equipo 2">
+                <h3>Francisco Penin</h3>
+                <p>Diseñador UX/UI</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="cta animate__animated animate__fadeIn">
+        <h2>¡Comienza hoy mismo!</h2>
+        <a href="index.php" class="btn-login">Iniciar Sesión</a>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 CStats. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('.carousel').slick({
+                dots: false,
+                arrows: false,
+                infinite: true,
+                speed: 1000,
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                autoplay: true,
+                autoplaySpeed: 5000,
+                fade: true,
+                cssEase: 'linear'
+            });
+        });
+    </script>
+</body>
+</html>
