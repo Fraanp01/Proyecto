@@ -22,13 +22,22 @@ function consultaPass($user, $pass) {
         return "ERROR: Usuario no encontrado.";
     }
 
-    
     if ($pass !== $registro["pass"]) {
         return "ERROR: Contraseña incorrecta.";
     }
 
+    // Almacenar datos del usuario en la sesión
     $_SESSION["username"] = $user;
     $_SESSION["idUsuario"] = $registro["idUsuario"];
+    
+    // Verificar y almacenar el rol del usuario
+    if (isset($registro["role"])) {
+        $_SESSION["role"] = $registro["role"];
+    } else {
+        // Rol predeterminado si no existe en la base de datos
+        $_SESSION["role"] = "usuario";
+    }
+    
     header("Location: principal.php");
     exit();
 }
@@ -39,4 +48,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $mensaje = consultaPass($user, $pass);
     echo $mensaje; 
 }
-?>
