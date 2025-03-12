@@ -8,28 +8,44 @@ if (!isset($_SESSION["idUsuario"])) {
 
 require_once "config.php";
 $pdo = conectarDB();
+$idUsuario = $_SESSION["idUsuario"];
+$esCoach = isset($_SESSION["role"]) && $_SESSION["role"] === 'coach';
 
+$mensaje = "";
+$error = "";
+
+// Procesar el formulario cuando se envía
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $mapa = $_POST["mapa"];
-    $resultado = $_POST["resultado"];
-    $fecha = $_POST["fecha"];
-    $idUsuario = $_SESSION["idUsuario"];
-
-    try {
-        $stmt = $pdo->prepare("INSERT INTO Partida (mapa, resultado, fecha, idUsuario) VALUES (:mapa, :resultado, :fecha, :idUsuario)");
-        $stmt->execute([
-            "mapa" => $mapa,
-            "resultado" => $resultado,
-            "fecha" => $fecha,
-            "idUsuario" => $idUsuario
-        ]);
-
-        header("Location: partidas.php");
-        exit();
-    } catch (PDOException $e) {
-        die("Error al registrar la partida: " . $e->getMessage());
+    // Obtener y validar los datos del formulario
+    $titulo = trim($_POST["titulo"] ?? "");
+    $mapa = trim($_POST["mapa"] ?? "");
+    $fecha = trim($_POST["fecha"] ?? date("Y-m-d"));
+    $resultado = trim($_POST["resultado"] ?? "");
+    
+    // Validar que los campos necesarios no estén vacíos
+    if (empty($titulo) || empty($mapa) || empty($fecha)) {
+        $error = "Por favor, completa todos los campos requeridos.";
+    } else {
+        try {
+            // Preparar la consulta SQL para insertar la partida
+            $stmt = $pdo->prepare("INSERT INTO Partida (idUsuario, titulo, mapa, fecha, resultado) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([$idUsuario, $titulo, $mapa, $fecha, $resultado]);
+            
+            $mensaje = "Partida registrada correctamente.";
+            
+            // Opcional: redirigir a la página de partidas después de registrar
+            header("Location: partidas.php?mensaje=Partida registrada correctamente");
+            exit();
+        } catch (PDOException $e) {
+            $error = "Error al registrar la partida: " . $e->getMessage();
+        }
     }
 }
+
+// Lista de mapas para el selector (puedes personalizarla)
+$mapas = [
+    "Ancient", "Anubis", "Dust II", "Inferno", "Mirage", "Nuke", "Overpass", "Vertigo"
+];
 ?>
 
 <!DOCTYPE html>
@@ -37,41 +53,106 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrar Partida</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Registrar Partida - CStats</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css.css">
+    <style>
+        :root {
+            --primary-color: #ffca28;
+            --background-dark: #121212;
+            --background-medium: #1c1c1c;
+            --background-light: #282828;
+            --text-light: #e0e0e0;
+            --accent-color: #ff5722;
+            --accent-hover: #ff784e;
+            --border-color: #333;
+            --box- shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            --transition-speed: 0.3s;
+        }
+
+        body {
+            background-color: var(--background-dark);
+            color: var(--text-light);
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .form-container {
+            background-color: rgba(40, 40, 40, 0.85);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--box-shadow);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: #333;
+            color: var(--text-light);
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color var(--transition-speed) ease;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+        }
+    </style>
 </head>
 <body>
 
-<header>
-    <div class="logo">
-        <img src="logo.png" alt="Logo">
-    </div>
-    <nav class="navigation">
-        <a href="index.php">Inicio</a>
-        <a href="dashboard.php">Dashboard</a> 
-        <a href="estadisticas.php">Estadísticas</a>
-    </nav>
-</header>
-
-<main class="content">
+<div class="form-container">
     <h1>Registrar Nueva Partida</h1>
-    <form action="registrar_partida.php" method="POST">
-        <label for="mapa">Mapa:</label>
-        <input type="text" id="mapa" name="mapa" required>
-
-        <label for="resultado">Resultado:</label>
-        <input type="text" id="resultado" name="resultado" required>
-
-        <label for="fecha">Fecha:</label>
-        <input type="date" id="fecha" name="fecha" required>
-
+    <?php if ($mensaje): ?>
+        <p style="color: green;"><?php echo htmlspecialchars($mensaje); ?></p>
+    <?php endif; ?>
+    <?php if ($error): ?>
+        <p style="color: red;"><?php echo htmlspecialchars($error); ?></p>
+    <?php endif; ?>
+    <form method="POST" action="">
+        <div class="form-group">
+            <label for="titulo">Título:</label>
+            <input type="text" id="titulo" name="titulo" required>
+        </div>
+        <div class="form-group">
+            <label for="mapa">Mapa:</label>
+            <select id="mapa" name="mapa" required>
+                <?php foreach ($mapas as $mapa): ?>
+                    <option value="<?php echo htmlspecialchars($mapa); ?>"><?php echo htmlspecialchars($mapa); ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="fecha">Fecha:</label>
+            <input type="date" id="fecha" name="fecha" value="<?php echo date('Y-m-d'); ?>" required>
+        </div>
+        <div class="form-group">
+            <label for="resultado">Resultado:</label>
+            <input type="text" id="resultado" name="resultado">
+        </div>
         <button type="submit" class="btn">Registrar Partida</button>
     </form>
-</main>
-
-<footer>
-    <p>&copy; 2025 Tu Proyecto. Todos los derechos reservados.</p>
-</footer>
+</div>
 
 </body>
 </html>
