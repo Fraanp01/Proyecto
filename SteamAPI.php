@@ -16,7 +16,17 @@ class SteamAPI {
      */
     public function getPlayerSummary($steamId) {
         $url = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={$this->apiKey}&steamids={$steamId}";
-        return $this->makeRequest($url);
+        
+        // Realiza la solicitud
+        $response = $this->makeRequest($url);
+        
+        // Verifica si la respuesta es válida
+        if (isset($response['response']['players']) && !empty($response['response']['players'])) {
+            return $response['response']['players'][0]; // Devuelve el primer jugador
+        } else {
+            // Manejo de errores: si no se encuentra el jugador
+            return null; // O puedes lanzar una excepción o devolver un mensaje de error
+        }
     }
     
     /**
@@ -27,7 +37,16 @@ class SteamAPI {
     public function getCS2Stats($steamId) {
         // El ID de la aplicación de CS2 es 730 (mismo que CS:GO)
         $url = "https://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=730&key={$this->apiKey}&steamid={$steamId}";
-        return $this->makeRequest($url);
+        $response = $this->makeRequest($url);
+        
+        // Verificación específica para CS2 para asegurarse de que tenemos datos válidos
+        if ($response && isset($response['playerstats']) && isset($response['playerstats']['stats']) && !empty($response['playerstats']['stats'])) {
+            return $response;
+        } else {
+            // Registrar el error para ayudar en la depuración
+            error_log("No se encontraron estadísticas válidas de CS2 para el usuario $steamId. Respuesta: " . json_encode($response));
+            return null;
+        }
     }
     
     /**
@@ -61,15 +80,25 @@ class SteamAPI {
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10); // Establece un tiempo de espera para la solicitud
+
         $response = curl_exec($ch);
         $error = curl_error($ch);
         curl_close($ch);
         
         if ($error) {
+            error_log("Error en la solicitud a la API de Steam: $error");
             return null;
         }
         
-        return json_decode($response, true);
+        $decodedResponse = json_decode($response, true);
+        
+        // Verifica si la respuesta es válida
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            error_log("Error al decodificar la respuesta JSON: " . json_last_error_msg());
+            return null;
+        }
+        
+        return $decodedResponse;
     }
 }
