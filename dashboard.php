@@ -1,6 +1,4 @@
-Aquí tienes el archivo dashboard.php con la sección de feedback eliminada:
 
-```php
 <?php
 session_start(); 
 
