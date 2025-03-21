@@ -293,7 +293,7 @@ if (!isset($_SESSION["username"])) {
                     <a href="principal.php" class="active"><i class="fas fa-home"></i> Inicio</a>
                     <a href="estadisticas.php"><i class="fas fa-chart-line"></i> Estadísticas</a>
                     <a href="partidas.php"><i class="fas fa-gamepad"></i> Partidas</a>
-                    <a href="estrategias.php"><i class="fas fa-lightbulb"></i> Estrategias</a>
+                    <a href="perfil.php"><i class="fas fa-user"></i> Perfil</a>
                     <a href="feedback.php"><i class="fas fa-comments"></i> Feedback</a>
                 </div>
             </div>

@@ -140,12 +140,13 @@ try {
         <img src="logo.png" alt="Logo">
     </div>
     <nav class="navigation">
-        <a href="index.php">Inicio</a>
-        <a href="dashboard.php">Dashboard</a> 
-        <a href="estadisticas.php">Estadísticas</a>
-        <?php if ($esCoach): ?>
-            <a href="agregar_video.php" class="btn">Añadir Video</a>
-        <?php endif; ?>
+    <div class="navigation">
+                    <a href="principal.php" class="active"><i class="fas fa-home"></i> Inicio</a>
+                    <a href="estadisticas.php"><i class="fas fa-chart-line"></i> Estadísticas</a>
+                    <a href="partidas.php"><i class="fas fa-gamepad"></i> Partidas</a>
+                    <a href="perfil.php"><i class="fas fa-user"></i> Perfil</a>
+                    <a href="feedback.php"><i class="fas fa-comments"></i> Feedback</a>
+                </div>
     </nav>
 </header>
 
