@@ -35,10 +35,11 @@ class SteamAPI {
      * @return array Estadísticas de CS2 o null en caso de error
      */
     public function getCS2Stats($steamId) {
-        // El ID de la aplicación de CS2 es 730 (mismo que CS:GO)
         $url = "https://api.steampowered.com/ISteamUserStats/GetUserStatsForGame/v0002/?appid=730&key={$this->apiKey}&steamid={$steamId}";
         $response = $this->makeRequest($url);
         
+        // Guardar respuesta para depuración
+        file_put_contents('debug_cs2_response.json', json_encode($response, JSON_PRETTY_PRINT));
         // Verificación específica para CS2 para asegurarse de que tenemos datos válidos
         if ($response && isset($response['playerstats']) && isset($response['playerstats']['stats']) && !empty($response['playerstats']['stats'])) {
             return $response;
