@@ -1,4 +1,3 @@
-
 <?php
 session_start();
 
@@ -55,7 +54,7 @@ if (!isset($_SESSION["username"])) {
             z-index: -1;
         }
         
-        /* Estilos del header y navegación */
+
         header {
             background-color: var(--background-medium);
             color: var(--primary-color);

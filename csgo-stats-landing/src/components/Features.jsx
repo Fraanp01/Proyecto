@@ -1,27 +1,43 @@
 import React from 'react';
+import './Features.css';
 
-function Features() {
+const Features = () => {
   return (
     <section id="features" className="features">
       <div className="container">
-        <h2>Características Clave</h2>
+        <h2 data-aos="fade-down">Características Principales</h2>
         <div className="feature-list">
-          <div className="feature-item">
-            <h3>Estadísticas Detalladas</h3>
-            <p>Accede a estadísticas en tiempo real sobre tu rendimiento y el de tus amigos.</p>
+          <div className="feature-item" data-aos="fade-up" data-aos-delay="100">
+            <div className="feature-icon">
+              <i className="fas fa-chart-line"></i>
+            </div>
+            <div className="feature-content">
+              <h3>Estadísticas en Tiempo Real</h3>
+              <p>Accede a estadísticas actualizadas al instante para mejorar tu rendimiento.</p>
+            </div>
           </div>
-          <div className="feature-item">
-            <h3>Seguimiento de Progreso</h3>
-            <p>Monitorea tu progreso a lo largo del tiempo y establece metas para mejorar.</p>
+          <div className="feature-item" data-aos="fade-up" data-aos-delay="300">
+            <div className="feature-icon">
+              <i className="fas fa-crosshairs"></i>
+            </div>
+            <div className="feature-content">
+              <h3>Análisis de Rendimiento</h3>
+              <p>Recibe análisis detallados de tus partidas y áreas de mejora.</p>
+            </div>
           </div>
-          <div className="feature-item">
-            <h3>Herramientas de Entrenamiento</h3>
-            <p>Utiliza nuestras herramientas para practicar y mejorar tus habilidades.</p>
+          <div className="feature-item" data-aos="fade-up" data-aos-delay="500">
+            <div className="feature-icon">
+              <i className="fas fa-user-friends"></i>
+            </div>
+            <div className="feature-content">
+              <h3>Interfaz Intuitiva</h3>
+              <p>Navega fácilmente a través de una interfaz diseñada para el usuario.</p>
+            </div>
           </div>
         </div>
       </div>
     </section>
   );
-}
+};
 
 export default Features;

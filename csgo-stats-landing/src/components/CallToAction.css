@@ -1,0 +1,25 @@
+.call-to-action {
+    padding: 60px 20px;
+    background-color: #1e1e1e;
+    text-align: center;
+  }
+  
+  .call-to-action h2 {
+    color: #ffca28;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .call-to-action p {
+    color: #e0e0e0;
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+  }
+  
+  .call-to-action .btn {
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+  }

@@ -1,17 +1,12 @@
 import React from 'react';
+import './Footer.css';
 
-function Footer() {
+const Footer = () => {
   return (
     <footer className="footer">
-      <div className="container">
-        <p>&copy; 2023 CS:GO Stats Pro. Todos los derechos reservados.</p>
-        <ul>
-          <li><a href="#">Política de Privacidad</a></li>
-          <li><a href="#">Términos de Servicio</a></li>
-        </ul>
-      </div>
+      <p>&copy; 2023 CS:GO Stats Tracker. Todos los derechos reservados.</p>
     </footer>
   );
-}
+};
 
 export default Footer;

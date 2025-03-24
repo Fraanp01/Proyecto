@@ -5,9 +5,9 @@ if (!isset($_SESSION["username"])) {
     exit();
 }
 
-// Incluir archivo de configuración de base de datos
+// Incluir archivo de configuración de base de datos y SteamAPI
 require_once("config.php");
-require_once("SteamAPI.php"); // Asegúrate de que este archivo existe
+require_once("SteamAPI.php");
 $estadisticas = null; // Inicializa la variable
 
 try {
@@ -41,8 +41,11 @@ try {
 
 // Variables para la búsqueda de jugadores
 $error = '';
+$apiError = false;
 $playerData = null;
 $csgoStats = null;
+$formattedStats = null;
+$statsUrl = null;
 
 // Procesar la búsqueda del jugador
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['steam_id'])) {
@@ -52,182 +55,112 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['steam_id'])) {
     if (!preg_match('/^[0-9]{17}$/', $steamId)) {
         $error = 'Por favor, introduce un Steam ID válido (17 dígitos)';
     } else {
-        $api = new SteamAPI();
-        $playerData = $api->getPlayerSummary($steamId);
+        // Inicializar SteamAPI
+        $steamAPI = new SteamAPI();
         
-        // Intentar obtener las estadísticas de CS:GO
-        $csgoStats = $api->getCSGOStats($steamId);
+        // Obtener datos del jugador
+        $playerSummary = $steamAPI->getPlayerSummary($steamId);
+        
+        if (!$playerSummary) {
+            $error = 'No se pudo encontrar información del jugador. Por favor, verifica el Steam ID.';
+        } else {
+            $playerData = $playerSummary;
+            $statsUrl = "https://csstats.gg/player/{$steamId}";
+            
+            // Intentar obtener estadísticas de CS2
+            $rawStats = $steamAPI->getCS2Stats($steamId);
+            
+            if ($rawStats && isset($rawStats['playerstats']['stats'])) {
+                $csgoStats = $rawStats['playerstats']['stats'];
+                
+                // Inicializar estadísticas formateadas
+                $formattedStats = [
+                    'totalKills' => 0,
+                    'totalDeaths' => 0,
+                    'totalWins' => 0,
+                    'totalRounds' => 0,
+                    'winRate' => 0,
+                    'headshots' => 0,
+                    'assists' => 0,
+                    'MVPs' => 0,
+                ];
+                
+                foreach ($csgoStats as $stat) {
+                    if ($stat['name'] === 'total_kills') {
+                        $formattedStats['totalKills'] = $stat['value'];
+                    } elseif ($stat['name'] === 'total_deaths') {
+                        $formattedStats['totalDeaths'] = $stat['value'];
+                    } elseif ($stat['name'] === 'total_wins') {
+                        $formattedStats['totalWins'] = $stat['value'];
+                    } elseif ($stat['name'] === 'total_rounds') {
+                        $formattedStats['totalRounds'] = $stat['value'];
+                    } elseif ($stat['name'] === 'total_headshots') {
+                        $formattedStats['headshots'] = $stat['value'];
+                    } elseif ($stat['name'] === 'total_assists') {
+                        $formattedStats['assists'] = $stat['value'];
+                    } elseif ($stat['name'] === 'total_mvps') {
+                        $formattedStats['MVPs'] = $stat['value'];
+                    }
+                }
+                
+                // Calcular tasa de victorias
+                if ($formattedStats['totalRounds'] > 0) {
+                    $formattedStats['winRate'] = round(($formattedStats['totalWins'] / $formattedStats['totalRounds']) * 100);
+                }
+            } else {
+                $apiError = true;
+            }
+        }
     }
 }
-?>
 
+// Mostrar estadísticas en la interfaz
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estadísticas - CStats</title>
+    <title>Estadísticas de CS2</title>
     <link rel="stylesheet" href="css.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        :root {
-            --primary-color: #ffca28;
-            --background-dark: #121212;
-            --background-medium: #1c1c1c;
-            --background-light: #282828;
-            --text-light: #e0e0e0;
-            --accent-color: #ff5722;
-            --accent-hover: #ff784e;
-            --border-color: #333;
-            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            --transition-speed: 0.3s;
-        }
-
         body {
-            background-color: var(--background-dark);
-            color: var(--text-light);
-            margin: 0;
-            padding: 0;
             font-family: 'Poppins', sans-serif;
-            line-height: 1.6;
+            background-color: #1e1e1e;
+            color: #f0f0f0;
         }
-
-        header {
-            background-color: var(--background-medium);
-            color: var(--primary-color);
-            padding: 15px 30px;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
-        }
-
-        .navigation {
-            display: flex;
-            gap: 20px;
-            margin-right: 15px;
-        }
-
-        .navigation a {
-            color: var(--text-light);
-            text-decoration: none;
-            font-weight: 600;
-            padding: 10px 15px;
-            transition: all var(--transition-speed) ease;
-            border-radius: 5px;
-        }
-
-        .navigation a:hover {
-            background-color: rgba(255, 202, 40, 0.1);
-            color: var(--primary-color);
-        }
-
-        .navigation a.active {
-            background-color: rgba(255, 202, 40, 0.2);
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--primary-color);
-        }
-
         .content {
-            max-width: 1200px;
-            margin: 100px auto 40px;
+            max-width: 800px;
+            margin: 20px auto;
             padding: 20px;
+            background: #2c2c2c;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
-
-        h1 {
-            color: var(--primary-color);
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.2rem;
+        h1, h2 {
+            color: #e0e0e0;
         }
-
-        .stats {
+        .stat-box {
             display: flex;
-            flex-wrap: wrap;
             justify-content: space-between;
-            margin-bottom: 30px;
-        }
-
-        .stat {
-            background-color: var(--background-medium);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: var(--box-shadow);
-            flex: 1 1 calc(25% - 20px);
-            margin: 10px;
-            text-align: center;
-        }
-
-        .search-player {
-            background-color: var(--background-medium);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: var(--box-shadow);
-            margin-bottom: 30px;
-        }
-
-        .search-player input {
-            width: calc(100% - 100px);
             padding: 10px;
-            border: none;
+            margin: 10px 0;
+            background: #3c3c3c;
             border-radius: 5px;
-            margin-right: 10px;
         }
-
-        .search-player button {
-            padding: 10px 20px;
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color var(--transition-speed) ease;
+        .stat-title {
+            font-weight: bold;
         }
-
-        .search-player button:hover {
-            background-color: var(--accent-hover);
+        .stat-value {
+            font-size: 1.2em;
+            color: #1abc9c;
         }
-
-        .player-card, .player-stats {
-            background-color: var(--background-medium);
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: var(--box-shadow);
-            margin-top: 20px;
-            text-align: center;
+        .error-message {
+            color: #e74c3c;
         }
-
-        .stat-card {
-            background-color: rgba(255, 202, 40, 0.1);
-            border-radius: 10px;
-            padding: 15px;
-            transition: transform var(--transition-speed) ease;
-            text-align: center;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-        }
-
-        footer {
-            background-color: var(--background-medium);
-            color: var(--text-light);
-            text-align: center;
-            padding: 15px 0;
-            position: relative;
-            bottom: 0;
-            width: 100%;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+        .api-error {
+            color: #f39c12;
         }
     </style>
 </head>
@@ -242,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['steam_id'])) {
                     <a href="dashboard.php">Dashboard</a>
                     <a href="partidas.php">Partidas</a>
                     <a href="estadisticas.php" class="active">Estadísticas</a>
-                    <a href="estrategias.php">Estrategias</a>
+                    <a href="perfil.php">Perfil</a>
                     <a href="feedback.php">Feedback</a>
                     <a href="logout.php">Cerrar sesión</a>
                 </div>
@@ -251,134 +184,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['steam_id'])) {
     </header>
 
     <div class="content">
-        <h1>Estadísticas Generales</h1>
-        <div class="stats">
-            <div class="stat">
-                <h3>K/D Ratio</h3>
-                <p>
-    <?php 
-    if ($estadisticas && isset($estadisticas['totalMuertes']) && $estadisticas['totalMuertes'] > 0) {
-        echo round($estadisticas['totalKills'] / $estadisticas['totalMuertes'], 2);
-    } else {
-        echo "N/A";
-    }
-    ?>
-</p>
+        <h1>Estadísticas de CS2</h1>
+        <?php if ($error): ?>
+            <p class="error-message"><?php echo htmlspecialchars($error); ?></p>
+        <?php endif; ?>
+        <?php if ($apiError): ?>
+            <p class="api-error">No se pudieron obtener estadísticas de CS2 para el jugador. Puede que el perfil sea privado o que no haya datos disponibles.</p>
+        <?php endif; ?>
+        
+        <form method="POST">
+            <label for="steam_id">Steam ID:</label>
+            <input type="text" name="steam_id" id="steam_id" required>
+            <button type="submit">Buscar</button>
+        </form>
+        
+        <?php if ($playerData): ?>
+            <h2>Información del Jugador</h2>
+            <p> Nombre: <?php echo htmlspecialchars($playerData['personaname']); ?></p>
+            <div class="stat-box">
+                <span class="stat-title">Victorias:</span>
+                <span class="stat-value"><?php echo $formattedStats['totalWins']; ?></span>
             </div>
-            <div class="stat">
-                <h3>Victorias</h3>
-                <p><?php echo $estadisticas['victorias'] ?? 0; ?></p> 
+            <div class="stat-box">
+                <span class="stat-title">Muertes:</span>
+                <span class="stat-value"><?php echo $formattedStats['totalDeaths']; ?></span>
             </div>
-            <div class="stat">
-                <h3>Derrotas</h3>
-                <p><?php echo $estadisticas['derrotas'] ?? 0; ?></p>
+            <div class="stat-box">
+                <span class="stat-title">Tasa de Victorias:</span>
+                <span class="stat-value"><?php echo $formattedStats['winRate']; ?>%</span>
             </div>
-            <div class="stat">
-                <h3>Total Kills</h3>
-                <p><?php echo $estadisticas['totalKills'] ?? 0; ?></p>
+            <div class="stat-box">
+                <span class="stat-title">Headshots:</span>
+                <span class="stat-value"><?php echo $formattedStats['headshots']; ?></span>
             </div>
-        </div>
-
-        <div class="search-player">
-            <h2>Búsqueda de Jugadores</h2>
-            <form method="POST" action="">
-                <input type="text" id="steam_id" name="steam_id" placeholder="76561198xxxxxxxxx" required>
-                <button type="submit">Buscar Jugador</button>
-            </form>
-
-            <?php if ($playerData): ?>
-                <div class="player-card">
-                    <h3>Información del Jugador</h3>
-                    <p>Nombre: <?php echo isset($playerData['personaname']) ? htmlspecialchars($playerData['personaname']) : 'No disponible'; ?></p>
-                    <p>Estado: <?php 
-                        if (isset($playerData['personastate'])) {
-                            $status = 'Desconocido';
-                            switch($playerData['personastate']) {
-                                case 0: $status = 'Desconectado'; break;
-                                case 1: $status = 'En línea'; break;
-                                case 2: $status = 'Ocupado'; break;
-                                case 3: $status = 'Ausente'; break;
-                                case 4: $status = 'Durmiendo'; break;
-                                case 5: $status = 'Deseando intercambiar'; break;
-                                case 6: $status = 'Deseando jugar'; break;
-                            }
-                            echo htmlspecialchars($status);
-                        } else {
-                            echo 'No disponible';
-                        }
-                    ?></p>
-                    
-                    <?php if (isset($playerData['avatar'])): ?>
-                        <p><img src="<?php echo htmlspecialchars($playerData['avatar']); ?>" alt="Avatar" width="100"></p>
-                    <?php else: ?>
-                        <p>Avatar no disponible</p>
-                    <?php endif; ?>
-                </div>
-
-                <?php if ($csgoStats && isset($csgoStats['playerstats']) && isset($csgoStats['playerstats']['stats'])): ?>
-                    <div class="player-stats">
-                        <h3>Estadísticas de CS:GO</h3>
-                        <div class="stats-grid">
-                            <?php
-                            $statsMapping = [
-                                'total_kills' => 'Kills',
-                                'total_deaths' => 'Deaths',
-                                'total_wins' => 'Victorias',
-                                'total_rounds_played' => 'Rondas Jugadas',
-                                'total_shots_fired' => 'Disparos Realizados',
-                                'total_shots_hit' => 'Disparos Acertados',
-                                'total_kills_headshot' => 'Headshots',
-                                'total_mvps' => 'MVPs',
-                                'total_time_played' => 'Tiempo Jugado (segundos)',
-                            ];
-
-                            $statsData = [];
-                            foreach ($csgoStats['playerstats']['stats'] as $stat) {
-                                if (isset($stat['name']) && isset($stat['value'])) {
-                                    $statsData[$stat['name']] = $stat['value'];
-                                }
-                            }
-
-                            foreach ($statsMapping as $statKey => $statName) {
-                                if (array_key_exists($statKey, $statsData)) {
-                                    echo '<div class="stat-card">';
-                                    echo '<h3>' . htmlspecialchars($statName) . '</h3>';
-                                    echo '<p>' . htmlspecialchars($statsData[$statKey]) . '</p>';
-                                    echo '</div>';
-                                }
-                            }
-
-                            if (isset($statsData['total_kills']) && isset($statsData['total_deaths']) && $statsData['total_deaths'] > 0) {
-                                $kdRatio = round($statsData['total_kills'] / $statsData['total_deaths'], 2);
-                                echo '<div class="stat-card">';
-                                echo '<h3>K/D Ratio</h3>';
-                                echo '<p>' . htmlspecialchars($kdRatio) . '</p>';
-                                echo '</div>';
-                            }
-
-                            if (isset($statsData['total_shots_fired']) && isset($statsData['total_shots_hit']) && $statsData['total_shots_fired'] > 0) {
-                                $accuracy = round(($statsData['total_shots_hit'] / $statsData['total_shots_fired']) * 100, 2);
-                                echo '<div class="stat-card">';
-                                echo '<h3>Precisión</h3>';
-                                echo '<p>' . htmlspecialchars($accuracy) . '%</p>';
-                                echo '</div>';
-                            }
-
-                            if (isset($statsData['total_kills']) && isset($statsData['total_kills_headshot']) && $statsData['total_kills'] > 0) {
-                                $headshotPercentage = round(($statsData['total_kills_headshot'] / $statsData['total_kills']) * 100, 2);
-                                echo '<div class="stat-card">';
-                                echo '<h3>Porcentaje de Headshots</h3>';
-                                echo '<p>' . htmlspecialchars($headshotPercentage) . '%</p>';
-                                echo '</div>';
-                            }
-                            ?>
-                        </div>
-                    </div>
-                <?php else: ?>
-                    <p class="error">No se encontraron estadísticas de CS:GO para este jugador.</p>
-                <?php endif; ?>
-            <?php endif; ?>
-        </div>
+            <div class="stat-box">
+                <span class="stat-title">Asistencias:</span>
+                <span class="stat-value"><?php echo $formattedStats['assists']; ?></span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-title">MVPs:</span>
+                <span class="stat-value"><?php echo $formattedStats['MVPs']; ?></span>
+            </div>
+            <p><a href="<?php echo htmlspecialchars($statsUrl); ?>" style="color: #1abc9c;">Ver estadísticas completas</a></p>
+        <?php endif; ?>
     </div>
 
     <footer>

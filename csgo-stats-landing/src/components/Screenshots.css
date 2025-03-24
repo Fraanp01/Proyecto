@@ -1,0 +1,62 @@
+.screenshots {
+    padding: 80px 20px;
+    background-color: #1e1e1e;
+  }
+  
+  .screenshots h2 {
+    text-align: center;
+    color: #ffca28;
+    margin-bottom: 40px;
+    font-size: 2.5rem;
+  }
+  
+  .screenshot-list {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .screenshot-item {
+    width: 300px;
+    height: 200px;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    background-color: #333;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  }
+  
+  .screenshot-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 20px;
+    text-align: center;
+    color: #e0e0e0;
+  }
+  
+  .screenshot-placeholder i {
+    font-size: 3rem;
+    color: #ffca28;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease;
+  }
+  
+  .screenshot-placeholder p {
+    font-weight: 500;
+  }
+  
+  .screenshot-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    background-color: #444;
+  }
+  
+  .screenshot-item:hover .screenshot-placeholder i {
+    transform: scale(1.2);
+  }

@@ -1,28 +1,24 @@
 import React from 'react';
-function Hero() {
+import './Hero.css';
+import backgroundImage from '../assets/cs21.jpeg'; // Importamos la imagen
+
+const Hero = () => {
   return (
-    <section className="hero">
-      <div className="container hero-container">
-        <div className="hero-content">
-          <h1>Eleva tu juego en CS:GO con análisis profesional</h1>
-          <p>
-            CS:GO Stats Pro te ofrece estadísticas detalladas, seguimiento de progreso y 
-            herramientas de entrenamiento para ayudarte a mejorar tu rendimiento 
-            y alcanzar el siguiente nivel.
-          </p>
-          <div className="hero-cta">
-            <a href="#" className="btn btn-primary btn-large">Comenzar gratis</a>
-            <a href="#demo" className="btn btn-text">Ver demo <i className="fas fa-play-circle"></i></a>
-          </div>
-        </div>
-        
-        <div className="hero-image">
-          <img src="/hero-dashboard.png" alt="Dashboard de CS:GO Stats Pro" />
+    <header 
+      className="hero" 
+      id="home" 
+      style={{ backgroundImage: `url(${backgroundImage})` }} // Aplicamos la imagen como fondo
+    >
+      <div className="hero-content" data-aos="fade-up">
+        <h1>Bienvenido a CS:GO Stats Tracker</h1>
+        <p>Mejora tu juego con estadísticas detalladas y análisis de rendimiento.</p>
+        <div className="hero-buttons">
+          <a href="#features" className="btn btn-primary">Descubre Más</a>
+          <a href="#call-to-action" className="btn btn-secondary">Comenzar Ahora</a>
         </div>
       </div>
-      
-       </section>
+    </header>
   );
-}
+};
 
 export default Hero;
