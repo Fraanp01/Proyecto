@@ -13,7 +13,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $descripcion = $_POST['descripcion'];
     $video = $_FILES['video'];
 
-    // Validar el archivo de video
     $allowedTypes = ['video/mp4', 'video/avi', 'video/mkv'];
     if (in_array($video['type'], $allowedTypes) && $video['error'] == 0) {
         $videoPath = 'uploads/videos/' . uniqid() . '-' . basename($video['name']);

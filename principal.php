@@ -88,9 +88,10 @@ if (!isset($_SESSION["username"])) {
         }
         
         .logo img {
-            height: 50px;
-            transition: transform var(--transition-speed) ease;
-        }
+    height: 50px; /* Ajusta la altura según sea necesario */
+    margin-right: 20px; /* Espacio a la derecha del logo */
+    transition: transform var(--transition-speed) ease;
+}
         
         .logo img:hover {
             transform: scale(1.05);
@@ -286,18 +287,18 @@ if (!isset($_SESSION["username"])) {
         <div class="header-container">
             <div class="nav-left">
                 <div class="logo">
-                    <img src="img/logo.png" alt="Logo"> 
+                    <img src="/img/logo-removebg-preview.png" alt="Logo"> 
                 </div>
                 <div class="navigation">
                     <a href="principal.php" class="active"><i class="fas fa-home"></i> Inicio</a>
+                    <a href="dashboard.php"><i class="fas fa-user"></i> Dashboard</a>
                     <a href="estadisticas.php"><i class="fas fa-chart-line"></i> Estadísticas</a>
                     <a href="partidas.php"><i class="fas fa-gamepad"></i> Partidas</a>
                     <a href="perfil.php"><i class="fas fa-user"></i> Perfil</a>
-                    <a href="feedback.php"><i class="fas fa-comments"></i> Feedback</a>
                 </div>
             </div>
             <div class="nav-right">
-                <a href="logout.php" class="btn btn-logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+            <a href="logout.php" class="btn btn-logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
             </div>
         </div>
     </header>
@@ -331,19 +332,18 @@ if (!isset($_SESSION["username"])) {
             </div>
 
             <div class="feature-card">
-                <div class="feature-icon"><i class="fas fa-comments"></i></div>
-                <h2>Feedback</h2>
-                <p>Envía tus comentarios y sugerencias para mejorar la aplicación.</p>
-                <a href="feedback.php" class="btn">Enviar Feedback</a>
-            </div>
+            <div class="feature-icon"><i class="fas fa-dumbbell"></i></div>
+            <h2>Entrenamientos</h2>
+            <p>Accede a entrenamientos personalizados para mejorar tu juego.</p>
+            <a href="entrenamiento.php" class="btn">Ver más</a>
         </div>
-
+</div>
         <div class="additional-section">
             <h2>Últimas Noticias</h2>
             <p>Mantente al tanto de las últimas actualizaciones y eventos en C Stats. Aquí encontrarás información sobre nuevas características, torneos y más.</p>
             <ul>
                 <li><strong>Actualización de estadísticas:</strong> Nuevas métricas disponibles para un análisis más profundo.</li>
-                <li><strong>Torneo mensual:</strong> Participa en nuestro torneo y gana premios increíbles.</li>
+                <li><strong>Entrenamiento:</strong> Entrenamientos personalizados por el coach.</li>
                 <li><strong>Mejoras en la interfaz:</strong> Hemos optimizado la navegación para una mejor experiencia de usuario.</li>
             </ul>
         </div>

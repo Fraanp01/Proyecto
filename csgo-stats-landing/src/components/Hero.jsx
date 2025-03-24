@@ -10,7 +10,7 @@ const Hero = () => {
       style={{ backgroundImage: `url(${backgroundImage})` }} // Aplicamos la imagen como fondo
     >
       <div className="hero-content" data-aos="fade-up">
-        <h1>Bienvenido a CS:GO Stats Tracker</h1>
+        <h1>Bienvenido a CSTeamBuild</h1>
         <p>Mejora tu juego con estadísticas detalladas y análisis de rendimiento.</p>
         <div className="hero-buttons">
           <a href="#features" className="btn btn-primary">Descubre Más</a>

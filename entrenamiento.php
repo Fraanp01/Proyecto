@@ -1,18 +1,15 @@
 <?php
 session_start();
 
-// Verificaciones de sesión
 if (!isset($_SESSION['usuario_id']) && isset($_SESSION['idUsuario'])) {
     $_SESSION['usuario_id'] = $_SESSION['idUsuario'];
 }
 
-// Si no hay sesión, redirige
 if (!isset($_SESSION['usuario_id']) && !isset($_SESSION['idUsuario']) && !isset($_SESSION['username'])) {
     header('Location: index.php');
     exit;
 }
 
-// Nombre de usuario para mostrar
 $nombre_usuario = $_SESSION['nombre'] ?? $_SESSION['username'] ?? 'Usuario';
 ?>
 
@@ -33,7 +30,98 @@ $nombre_usuario = $_SESSION['nombre'] ?? $_SESSION['username'] ?? 'Usuario';
             margin: 0;
             padding: 0;
         }
+        header {
+            background-color: var(--background-medium);
+            color: var(--primary-color);
+            padding: 15px 30px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            box-sizing: border-box;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .nav-left {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo {
+            margin-right: 30px;
+        }
+        
+        .logo img {
+            height: 50px;
+            margin-right: 20px;
+            transition: transform var(--transition-speed) ease;
+        }
+        
+        .navigation {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .navigation a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            padding: 10px 15px;
+            transition: all var(--transition-speed) ease;
+            border-radius: 5px;
+            display: flex; align-items: center;
+        }
+        
+        .navigation a i {
+            margin-right: 5px;
+        }
+        
+        .navigation a:hover {
+            background-color: rgba(255, 202, 40, 0.1);
+            color: var(--primary-color);
+        }
+        
+        .navigation a.active {
+            background-color: rgba(255, 202, 40, 0.2);
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+        }
+        
+        .btn-logout {
+            margin-left: auto;
+            padding: 8px 15px;
+            background-color: #ff5722;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn-logout i {
+            margin-right: 5px;
+        }
+        
+        .btn-logout:hover {
+            background-color: #ff784e;
+        }
+
         .container {
+ margin-top: 80px; 
             max-width: 1000px;
             margin: 80px auto;
             padding: 30px;
@@ -95,7 +183,7 @@ $nombre_usuario = $_SESSION['nombre'] ?? $_SESSION['username'] ?? 'Usuario';
         }
         .map-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220 px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 15px;
             margin-top: 20px;
         }
@@ -128,27 +216,27 @@ $nombre_usuario = $_SESSION['nombre'] ?? $_SESSION['username'] ?? 'Usuario';
 
         function showResources(mapa) {
             const recursosDiv = document.getElementById('recursos');
-            recursosDiv.innerHTML = ''; // Limpiar contenido previo
+            recursosDiv.innerHTML = '';
             const recursos = {
                 'inferno': [
-                    { nombre: 'Smokes de Inferno', descripcion: 'Los smokes más usados en Inferno para controlar el mapa.', video: 'https://www.youtube.com/watch?v=MnWZuVCA-Cc' },
-                    { nombre: 'Flashbangs de Inferno', descripcion: 'Cómo usar flashbangs efectivamente en Inferno.', video: 'https://www.youtube.com/watch?v=5ihzFtJdVoI' }
+                    { nombre: 'Smokes de Inferno', descripcion: 'Los smokes más usados en Inferno para controlar el mapa.', video: 'https://www.youtube.com/watch?v=mIjkB4Zt2sA' },
+                    { nombre: 'Flashbangs de Inferno', descripcion: 'Cómo usar flashbangs efectivamente en Inferno.', video: 'https://www.youtube.com/watch?v=3iUsgjnrWxU&t=35s' }
                 ],
                 'dust2': [
-                    { nombre: 'Smokes de Dust II', descripcion: 'Los smokes más efectivos para Dust II.', video: 'https://www.youtube.com/watch?v=9L9D5yc8LuE' },
-                    { nombre: 'Molotovs de Dust II', descripcion: 'Uso de molotovs en Dust II para controlar áreas.', video: 'https://www.youtube.com/watch?v=wYrB_XgRnww' }
+                    { nombre: 'Smokes de Dust II', descripcion: 'Los smokes más efectivos para Dust II.', video: 'https://www.youtube.com/watch?v=Bc0WFG-fU4w' },
+                    { nombre: 'Molotovs de Dust II', descripcion: 'Uso de molotovs en Dust II para controlar áreas.', video: 'https://www.youtube.com/watch?v=JWeHpTC-lx0' }
                 ],
                 'mirage': [
-                    { nombre: 'Smokes de Mirage', descripcion: 'Los smokes más efectivos para Mirage.', video: 'https://www.youtube.com/watch?v=NCsFNAMdGn0' },
-                    { nombre: 'Flashbangs de Mirage', descripcion: 'Cómo usar flashbangs efectivamente en Mirage.', video: 'https://www.youtube.com/watch?v=5ihzFtJdVoI' }
+                    { nombre: 'Smokes de Mirage', descripcion: 'Los smokes más efectivos para Mirage.', video: 'https://www.youtube.com/watch?v=AKuqMLnB07U' },
+                    { nombre: 'Flashbangs de Mirage', descripcion: 'Cómo usar flashbangs efectivamente en Mirage.', video: 'https://www.youtube.com/watch?v=u4iqihJis2k&t=10s' }
                 ],
                 'nuke': [
-                    { nombre: 'Smokes de Nuke', descripcion: 'Los smokes más importantes para Nuke.', video: 'https://www.youtube.com/watch?v=example1' },
-                    { nombre: 'Molotovs de Nuke', descripcion: 'Uso de molotovs en Nuke para controlar áreas clave.', video: 'https://www.youtube.com/watch?v=example2' }
+                    { nombre: 'Smokes de Nuke', descripcion: 'Los smokes más importantes para Nuke.', video: 'https://www.youtube.com/watch?v=4UObn0ss2ds' },
+                    { nombre: 'Molotovs de Nuke', descripcion: 'Uso de molotovs en Nuke para controlar áreas clave.', video: 'https://www.youtube.com/watch?v=5_qmiKa6AFE' }
                 ],
                 'overpass': [
-                    { nombre: 'Smokes de Overpass', descripcion: 'Los smokes más efectivos para Overpass.', video: 'https://www.youtube.com/watch?v=example3' },
-                    { nombre: 'Flashbangs de Overpass', descripcion: 'Cómo usar flashbangs en Overpass.', video: 'https://www.youtube.com/watch?v=example4' }
+                    { nombre: 'Smokes de Overpass', descripcion: 'Los smokes más efectivos para Overpass.', video: 'https://www.youtube.com/watch?v=3TP7jIDzMpY' },
+                    { nombre: 'Flashbangs de Overpass', descripcion: 'Cómo usar flashbangs en Overpass.', video: 'https://www.youtube.com/watch?v=k1IJ8uM1SZo' }
                 ]
             };
 
@@ -165,6 +253,25 @@ $nombre_usuario = $_SESSION['nombre'] ?? $_SESSION['username'] ?? 'Usuario';
     </script>
 </head>
 <body>
+    <header>
+        <div class="header-container">
+            <div class="nav-left">
+                <div class="logo">
+                    <img src="/img/logo-removebg-preview.png" alt="Logo"> 
+                </div>
+                <div class="navigation">
+                    <a href="principal.php" class="active"><i class="fas fa-home"></i> Inicio</a>
+                    <a href="estadisticas.php"><i class="fas fa-chart-line"></i> Estadísticas</a>
+                    <a href="partidas.php"><i class="fas fa-gamepad"></i> Partidas</a>
+                    <a href="perfil.php"><i class="fas fa-user"></i> Perfil</a>
+                </div>
+            </div>
+            <div class="nav-right">
+                <a href="logout.php" class="btn btn-logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+            </div>
+        </div>
+    </header>
+
     <div class="container">
         <h1>Entrenamientos</h1>
         <div class="tabs">
@@ -182,13 +289,25 @@ $nombre_usuario = $_SESSION['nombre'] ?? $_SESSION['username'] ?? 'Usuario';
                     <h4>Gridshot Ultimate</h4>
                     <p>Duración: 10 minutos</p>
                     <p>Mejora tu velocidad y precisión disparando a objetivos distribuidos en una cuadrícula.</p>
-                    <a href="https://www.youtube.com/watch?v=TsHKZGHCnpk" target="_blank">Ver Video</a>
+                    <a href="https://www.youtube.com/watch?v=eIKA8XQ4p_Q" target="_blank">Ver Video</a>
                 </div>
                 <div class="exercise">
                     <h4>Spidershot Precision</h4>
                     <p>Duración: 5 minutos</p>
                     <p>Entrena tu precisión con objetivos que aparecen a diferentes distancias.</p>
-                    <a href="https://www.youtube.com/watch?v=ygVxdZj91Rs" target="_blank">Ver Video</a>
+                    <a href="https://www.youtube.com/watch?v=LWnivj9KIBE" target="_blank">Ver Video</a>
+                </div>
+                <div class="exercise">
+                    <h4>Decision Shot Speed</h4>
+                    <p>Duración: 5 minutos</p>
+                    <p>Ayuda a tomar decisiones rápidamente.</p>
+                    <a href="https://www.youtube.com/watch?v=kSkDivk0nJY" target="_blank">Ver Video</a>
+                </div>
+                <div class="exercise">
+                    <h4>Microshoot</h4>
+                    <p>Duración: 5 minutos</p>
+                    <p>Entrena tu precisión con objetivos que aparecen a diferentes distancias cortas.</p>
+                    <a href ="https://www.youtube.com/watch?v=DGm2OaHC9gY" target="_blank">Ver Video</a>
                 </div>
             </div>
         </div>
@@ -225,20 +344,21 @@ $nombre_usuario = $_SESSION['nombre'] ?? $_SESSION['username'] ?? 'Usuario';
                 <div class="strategy-item">
                     <h4>Comunicación Efectiva</h4>
                     <p>Aprende a comunicarte con tu equipo para coordinar estrategias y movimientos.</p>
-                    <a href="https://www.youtube.com/watch?v=example5" target="_blank">Ver Video</a>
                 </div>
                 <div class="strategy-item">
                     <h4>Formaciones de Equipo</h4>
                     <p>Conoce las mejores formaciones para maximizar el rendimiento de tu equipo.</p>
-                    <a href="https://www.youtube.com/watch?v=example6" target="_blank">Ver Video</a>
                 </div>
                 <div class="strategy-item">
                     <h4>Roles en el Equipo</h4>
                     <p>Entiende la importancia de los roles dentro del equipo y cómo desempeñarlos.</p>
-                    <a href="https://www.youtube.com/watch?v=example7" target="_blank">Ver Video</a>
                 </div>
             </div>
         </div>
     </div>
+
+    <footer>
+        <p>&copy; 2023 CStats. Todos los derechos reservados.</p>
+    </footer>
 </body>
 </html>

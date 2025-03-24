@@ -30,8 +30,8 @@ const Features = () => {
               <i className="fas fa-user-friends"></i>
             </div>
             <div className="feature-content">
-              <h3>Interfaz Intuitiva</h3>
-              <p>Navega fácilmente a través de una interfaz diseñada para el usuario.</p>
+              <h3>Conexión con coach</h3>
+              <p>Obten feedback de tu coach fácilmente.</p>
             </div>
           </div>
         </div>

@@ -1,5 +1,4 @@
 
-/* Variables para colores y sombras consistentes */
 :root {
     --primary-color: #ffca28;
     --background-dark: #121212;
@@ -11,10 +10,9 @@
     --border-color: #333;
     --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     --transition-speed: 0.3s;
-    --section-spacing: 30px; /* Variable para espaciado consistente */
+    --section-spacing: 30px;
 }
 
-/* Estilos generales */
 body {
     background-color: var(--background-dark);
     color: var(--text-light);
@@ -24,7 +22,6 @@ body {
     line-height: 1.6;
 }
 
-/* Header y navegación */
 header {
     background-color: var(--background-medium);
     color: var(--primary-color);
@@ -74,14 +71,12 @@ header {
     border-bottom: 2px solid var(--primary-color);
 }
 
-/* Contenedor principal */
 .content {
     max-width: 1200px;
     margin: 100px auto 40px;
     padding: 20px;
 }
 
-/* Título principal */
 h1 {
     color: var(--primary-color);
     text-align: center;
@@ -89,7 +84,6 @@ h1 {
     font-size: 2.2rem;
 }
 
-/* Sección de características principales */
 .features-summary {
     display: flex;
     flex-wrap: wrap;
@@ -111,7 +105,6 @@ h1 {
     transform: translateY(-5px);
 }
 
-/* SECCIÓN DE GRÁFICOS - Separada visualmente */
 .chart-section {
     margin: 40px 0;
     background-color: var(--background-medium);
@@ -119,7 +112,6 @@ h1 {
     padding: 20px; box-shadow: var(--box-shadow);
 }
 
-/* Espaciado entre secciones */
 .chart-section {
     margin-bottom: var(--section-spacing);
 }
@@ -138,7 +130,6 @@ h1 {
     margin-top: var(--section-spacing);
 }
 
-/* Estilos para los logros */
 .achievements-section {
     background-color: var(--background-medium);
     border-radius: 10px;
@@ -146,7 +137,6 @@ h1 {
     box-shadow: var(--box-shadow);
 }
 
-/* Estilos para personalizar el perfil */
 .profile-section {
     background-color: var(--background-medium);
     border-radius: 10px;
@@ -154,7 +144,6 @@ h1 {
     box-shadow: var(--box-shadow);
 }
 
-/* Estilos para las notificaciones */
 .notifications-section {
     background-color: var(--background-medium);
     border-radius: 10px;
@@ -162,7 +151,6 @@ h1 {
     box-shadow: var(--box-shadow);
 }
 
-/* Footer */
 footer {
     background-color: var(--background-medium);
     color: var(--text-light);

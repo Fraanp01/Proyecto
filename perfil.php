@@ -1,30 +1,23 @@
 <?php
-// Iniciamos la sesión antes de cualquier salida
 session_start();
 
-// Verificar qué variables de sesión están disponibles
 if (!isset($_SESSION['usuario_id']) && isset($_SESSION['idUsuario'])) {
     $_SESSION['usuario_id'] = $_SESSION['idUsuario'];
 }
 
-// También podemos verificar por 'username'
 if (!isset($_SESSION['nombre']) && isset($_SESSION['username'])) {
     $_SESSION['nombre'] = $_SESSION['username'];
 }
 
-// Si no hay sesión, redirigimos al login principal
 if (!isset($_SESSION['usuario_id']) && !isset($_SESSION['idUsuario']) && !isset($_SESSION['username'])) {
-    // Guardar la URL actual para redirigir después del login
     $_SESSION['redirect_after_login'] = 'perfil.php';
-    header('Location: index.php'); // Tu página de login principal
+    header('Location: index.php'); 
     exit;
 }
 
-// Usamos la variable de sesión que esté disponible para el nombre de usuario
 $nombre_usuario = $_SESSION['nombre'] ?? $_SESSION['username'] ?? 'Usuario';
 $usuario_id = $_SESSION['usuario_id'] ?? $_SESSION['idUsuario'] ?? null;
 
-// Configuramos datos de usuario con valores predeterminados
 $usuario = [
     'nombre' => $nombre_usuario,
     'email' => 'usuario@ejemplo.com',
@@ -32,32 +25,26 @@ $usuario = [
     'role' => 'usuario'
 ];
 
-// Configuración de preferencias (simulada)
 $preferencias = [
     'tema' => 'oscuro',
     'notificaciones' => 'activadas',
     'privacidad' => 'amigos'
 ];
 
-// Actividad reciente (simulada)
 $actividad_reciente = [
     ['tipo' => 'login', 'fecha' => date('Y-m-d H:i:s', strtotime('-1 day'))],
     ['tipo' => 'cambio de contraseña', 'fecha' => date('Y-m-d H:i:s', strtotime('-3 days'))],
     ['tipo' => 'actualización de perfil', 'fecha' => date('Y-m-d H:i:s', strtotime('-5 days'))],
 ];
 
-// Entrenamientos programados (inicialmente vacío)
 $entrenamientos = [];
 
-// Variable para controlar si el usuario es coach
 $es_coach = false;
 $usuarios_lista = [];
 
-// Solo intentamos conectar a la base de datos si quieres intentarlo
 $db_connected = false;
 $connection_error = '';
 
-// Intentamos obtener datos reales solo si existen las funciones necesarias
 if (file_exists('config.php') && file_exists('funciones.php')) {
     try {
         require_once 'config.php';
@@ -66,14 +53,11 @@ if (file_exists('config.php') && file_exists('funciones.php')) {
             require_once 'funciones.php';
         }
         
-        // Solo si existe la función conectarDB intentamos la conexión
         if (function_exists('conectarDB')) {
             $conexion = conectarDB();
             
-            // Si llegamos aquí es que la conexión fue exitosa
             $db_connected = true;
             
-            // Intentamos obtener información del usuario desde la tabla login
             if ($usuario_id !== null) {
                 $stmt = $conexion->prepare("SELECT * FROM login WHERE idUsuario = :id");
                 $stmt->bindParam(':id', $usuario_id, PDO::PARAM_INT);
@@ -81,20 +65,17 @@ if (file_exists('config.php') && file_exists('funciones.php')) {
                 $usuario_db = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 if ($usuario_db) {
-                    // Actualizamos el array de usuario con datos de la base de datos
                     $usuario['nombre'] = $usuario_db['user'] ?? $usuario['nombre'];
                     $usuario['email'] = $usuario_db['email'] ?? $usuario['email'];
                     $usuario['fecha_registro'] = $usuario_db['fecha_registro'] ?? $usuario['fecha_registro'];
                     $usuario['role'] = $usuario_db['role'] ?? $usuario['role'];
                     
-                    // Verificamos si el usuario es coach
                     if ($usuario['role'] === 'coach') {
                         $es_coach = true;
                     }
                 }
             }
 
-            // Obtener entrenamientos programados para el usuario
             if ($usuario_id !== null) {
                 $stmt = $conexion->prepare("SELECT * FROM entrenamientos WHERE usuario_id = :usuario_id");
                 $stmt->bindParam(':usuario_id', $usuario_id, PDO::PARAM_INT);
@@ -102,7 +83,6 @@ if (file_exists('config.php') && file_exists('funciones.php')) {
                 $entrenamientos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
 
-            // Obtener lista de usuarios para que el coach pueda seleccionar
             if ($es_coach) {
                 $stmt = $conexion->prepare("SELECT idUsuario, user FROM login WHERE role = 'usuario' ORDER BY user ASC");
                 $stmt->execute();
@@ -189,7 +169,7 @@ if (file_exists('config.php') && file_exists('funciones.php')) {
         .navigation {
             display: flex;
             gap: 20px;
-            margin-right: auto; /* Asegura que el botón de cerrar sesión esté alineado a la derecha */
+            margin-right: auto; 
         }
 
         .navigation a {
@@ -228,7 +208,7 @@ if (file_exists('config.php') && file_exists('funciones.php')) {
 
         .perfil-container {
             max-width: 800px;
-            margin: 100px auto 20px; /* Espacio para el header fijo */
+            margin: 100px auto 20px; 
             padding: 20px;
             background: rgba(40, 40, 40, 0.85);
             border-radius: 8px;
@@ -258,7 +238,6 @@ if (file_exists('config.php') && file_exists('funciones.php')) {
             width: 100%;
         }
 
-        /* Estilos para el formulario de agregar entrenamiento */
         form {
             display: flex;
             flex-direction: column;
@@ -314,7 +293,6 @@ if (file_exists('config.php') && file_exists('funciones.php')) {
                     <a href="estadisticas.php"><i class="fas fa-chart-line"></i> Estadísticas</a>
                     <a href="partidas.php"><i class="fas fa-gamepad"></i> Partidas</a>
                     <a href="estrategias.php"><i class="fas fa-lightbulb"></i> Estrategias</a>
-                    <a href="feedback.php"><i class="fas fa-comments"></i> Feedback</a>
                     <a href="perfil.php" class="active"><i class="fas fa-user"></i> Perfil</a>
                     <a href="logout.php" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
                 </div>
@@ -408,7 +386,6 @@ if (file_exists('config.php') && file_exists('funciones.php')) {
 </html>
 
 <?php
-// Continuamos con la lógica para eliminar entrenamientos
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['entrenamiento_id'])) {
     $entrenamiento_id = $_POST['entrenamiento_id'];
 

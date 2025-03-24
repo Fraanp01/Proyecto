@@ -1,7 +1,5 @@
 <?php
-// Este archivo verifica la sesión y proporciona una función para comprobar la autenticación
 
-// Iniciar sesión si aún no está iniciada
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }

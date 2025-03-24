@@ -13,7 +13,6 @@ $pdo = conectarDB();
 $idUsuario = $_SESSION["idUsuario"];
 
 try {
-    // Obtener última partida
     $stmt = $pdo->prepare("
         SELECT * 
         FROM Partida 
@@ -24,7 +23,6 @@ try {
     $stmt->execute(["idUsuario" => $idUsuario]);
     $ultimaPartida = $stmt->fetch();
     
-    // Obtener todas las partidas para estadísticas
     $stmtTotal = $pdo->prepare("SELECT * FROM Partida WHERE idUsuario = :idUsuario");
     $stmtTotal->execute(["idUsuario" => $idUsuario]);
     $partidas = $stmtTotal->fetchAll();
@@ -34,7 +32,6 @@ try {
     $contadorVictorias = count($victorias);
     $derrotas = $totalPartidas - $contadorVictorias;
     
-    // Obtener estadísticas adicionales como K/D ratio
     $stmtStats = $pdo->prepare("
         SELECT 
             SUM(kills) as totalKills, 
@@ -51,7 +48,6 @@ try {
         $kdRatio = round($estadisticas["totalKills"] / $estadisticas["totalMuertes"], 2);
     }
     
-    // Obtener mapas más jugados
     $stmtMapas = $pdo->prepare("
         SELECT mapa, COUNT(*) as total 
         FROM Partida 
@@ -63,13 +59,11 @@ try {
     $stmtMapas->execute(["idUsuario" => $idUsuario]);
     $mapasPopulares = $stmtMapas->fetchAll();
 
-    // Comprobar logros
     $logros = [
         'primeras_10_victorias' => $contadorVictorias >= 10,
         'racha_5_victorias' => false
     ];
 
-    // Verificar racha de 5 victorias consecutivas
     $rachaActual = 0;
     $rachaMaxima = 0;
     
@@ -188,7 +182,6 @@ try {
         <h3>Notificaciones</h3>
         <ul>
             <li>No tienes nuevas notificaciones.</li>
-            <!-- Aquí puedes agregar lógica para mostrar notificaciones dinámicamente -->
         </ul>
     </div>
 </div>

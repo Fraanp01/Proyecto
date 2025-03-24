@@ -24,7 +24,6 @@ function conectarDB() {
     }
 }
 
-// Función para verificar si el usuario tiene rol de coach
 function esCoach() {
     if (!isset($_SESSION["role"]) || $_SESSION["role"] !== "coach") {
         return false;
@@ -32,7 +31,6 @@ function esCoach() {
     return true;
 }
 
-// Función para redirigir si no es coach
 function verificarRolCoach() {
     if (!esCoach()) {
         header("Location: partidas.php?error=No tienes permisos para acceder a esta función");
@@ -40,7 +38,6 @@ function verificarRolCoach() {
     }
 }
 
-// Función para verificar si el usuario está autenticado
 function verificarSesion() {
     if (!isset($_SESSION["idUsuario"])) {
         header("Location: index.php");

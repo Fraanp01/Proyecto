@@ -1,5 +1,4 @@
 <?php
-// buscar_estadisticas.php
 require_once 'SteamAPI.php';
 
 $error = '';
@@ -9,7 +8,6 @@ $playerData = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['steam_id'])) {
     $steamId = trim($_POST['steam_id']);
     
-    // Validación básica del Steam ID
     if (!preg_match('/^[0-9]{17}$/', $steamId)) {
         $error = 'Por favor, introduce un Steam ID válido (17 dígitos)';
     } else {
@@ -26,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['steam_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estadísticas de Juegos de Steam</title>
-    <link rel="stylesheet" href="tu_archivo_css.css">
+    <link rel="stylesheet" href="css.css">
     <style>
         .game-card {
             border: 1px solid #ddd;
@@ -190,7 +188,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['steam_id'])) {
                 
                 <div id="games-container">
                     <?php 
-                    // Ordenar juegos por tiempo de juego (predeterminado)
                     usort($ownedGames['response']['games'], function($a, $b) {
                         return $b['playtime_forever'] - $a['playtime_forever'];
                     });
@@ -261,12 +258,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['steam_id'])) {
                         return 0;
                     });
                     
-                    // Remover todos los juegos del contenedor
                     while (container.firstChild) {
                         container.removeChild(container.firstChild);
                     }
                     
-                    // Añadir los juegos ordenados de nuevo
                     games.forEach(function(game) {
                         container.appendChild(game);
                     });

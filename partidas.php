@@ -145,7 +145,8 @@ try {
                     <a href="estadisticas.php"><i class="fas fa-chart-line"></i> Estadísticas</a>
                     <a href="partidas.php"><i class="fas fa-gamepad"></i> Partidas</a>
                     <a href="perfil.php"><i class="fas fa-user"></i> Perfil</a>
-                    <a href="feedback.php"><i class="fas fa-comments"></i> Feedback</a>
+                    <a href="logout.php" class="btn btn-logout"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</a>
+
                 </div>
     </nav>
 </header>
@@ -186,9 +187,7 @@ try {
 </html>
 
 <?php
-// Lógica para verificar el rol del usuario
-$rolUsuario = $_SESSION["rolUsuario"] ?? 'usuario'; // Asumiendo que el rol se guarda en la sesión
+$rolUsuario = $_SESSION["rolUsuario"] ?? 'usuario'; 
 
 if ($rolUsuario === 'coach') {
-    // Lógica adicional para coaches, si es necesario
 }

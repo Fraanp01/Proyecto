@@ -1,35 +1,29 @@
 <?php
-// buscar_jugador.php
 require_once 'SteamAPI.php';
-require_once 'CSGOStatsScrapper.php'; // Asegúrate de que el nombre coincide con tu archivo
+require_once 'CSGOStatsScrapper.php'; 
 
 $error = '';
 $playerData = null;
 $csgoStats = null;
-$mapStats = null; // Nueva variable para las estadísticas de mapas
-$detailedMapStats = null; // Nueva variable para estadísticas detalladas de mapa
-$selectedMap = ''; // Para recordar el mapa seleccionado
+$mapStats = null;
+$detailedMapStats = null;
+$selectedMap = '';
 
-// Procesar la búsqueda general del jugador
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['steam_id']) && empty($_POST['map_name'])) {
     $steamId = trim($_POST['steam_id']);
     
-    // Validación básica del Steam ID
     if (!preg_match('/^[0-9]{17}$/', $steamId)) {
         $error = 'Por favor, introduce un Steam ID válido (17 dígitos)';
     } else {
         $api = new SteamAPI();
         $playerData = $api->getPlayerSummary($steamId);
         
-        // Intentamos obtener las estadísticas de CS:GO
         $csgoStats = $api->getCSGOStats($steamId);
         
-        // Intentamos obtener estadísticas de mapas con el scraper
         try {
-            $scraper = new CSGOStatsScraper();
+            $scraper = new CSGOStatsScrapper();
             $scrapedData = $scraper->getPlayerStats($steamId);
             
-            // Verificamos que los datos tengan el formato esperado
             if (is_array($scrapedData) && !isset($scrapedData['error'])) {
                 $mapStats = $scrapedData;
             } else {
@@ -45,7 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['steam_id']) && empty
     }
 }
 
-// Procesar la solicitud de estadísticas detalladas por mapa
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['map_name']) && !empty($_POST['steam_id'])) {
     $selectedMap = trim($_POST['map_name']);
     $steamId = trim($_POST['steam_id']);
@@ -56,28 +49,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['map_name']) && !empt
         $api = new SteamAPI();
         $playerData = $api->getPlayerSummary($steamId);
         
-        // Intentamos obtener las estadísticas de CS:GO
         $csgoStats = $api->getCSGOStats($steamId);
         
-        // Intentamos obtener las estadísticas generales de mapas y del mapa específico
-        try {
-            $scraper = new CSGOStatsScraper();
-            $scrapedData = $scraper->getPlayerStats($steamId);
-            
-            if (is_array($scrapedData) && !isset($scrapedData['error'])) {
-                $mapStats = $scrapedData;
-            }
-            
-            // Obtener las estadísticas detalladas del mapa seleccionado
-            $detailedMapStats = $scraper->getMapDetailedStats($steamId, $selectedMap);
-            
-            if (isset($detailedMapStats['error'])) {
-                $error .= " Error al obtener estadísticas detalladas del mapa: " . $detailedMapStats['error'];
-            }
-        } catch (Exception $e) {
-            $error .= " Error al acceder a CSGOSTATS.GG: " . $e->getMessage();
-        }
-    }
+        
 }
 ?>
 
@@ -87,9 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['map_name']) && !empt
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Búsqueda de Jugadores de Steam</title>
-    <link rel="stylesheet" href="css.css"> <!-- Asegúrate de que este archivo CSS esté correctamente vinculado -->
+    <link rel="stylesheet" href="css.css"> 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Añadido Chart .js para visualizaciones -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> 
     <style>
         :root {
             --primary-color: #ffca28;
@@ -115,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['map_name']) && !empt
 
         .container {
             max-width: 800px; 
-            margin: 80px auto; /* Espacio para el header fijo */
+            margin: 80px auto;
             background: var(--background-medium);
             padding: 20px;
             border-radius: 8px;
@@ -138,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['map_name']) && !empt
             padding: 15px;
             margin-top: 20px;
             border-radius: 5px;
-            background-color: #2a2a2a; /* Fondo más oscuro */
+            background-color: #2a2a2a;
         }
 
         .search-section {
@@ -195,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['map_name']) && !empt
         }
 
         .stat-card {
-            background-color: #2a2a2a; /* Fondo más oscuro */
+            background-color: #2a2a2a;
             border-radius: 5px;
             padding: 15px;
             text-align: center;
@@ -227,7 +201,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['map_name']) && !empt
                     <option value="Dust II">Dust II</option>
                     <option value="Mirage">Mirage</option>
                     <option value="Inferno">Inferno</option>
-                    <!-- Agregar más mapas según sea necesario -->
                 </select>
                 <button type="submit">Buscar Jugador</button>
             </form>
@@ -270,7 +243,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['map_name']) && !empt
                     <h2>Estadísticas de CS:GO</h2>
                     <div class="stats-grid">
                         <?php
-                        // Muestra estadísticas relevantes
                         $statsMapping = [
                             'total_kills' => 'Kills',
                             'total_deaths' => 'Deaths',
@@ -290,7 +262,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['map_name']) && !empt
                             }
                         }
 
-                        // Mostrar estadísticas mapeadas
                         foreach ($statsMapping as $statKey => $statName) {
                             if (array_key_exists($statKey, $statsData)) {
                                 echo '<div class="stat-card">';
@@ -300,7 +271,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['map_name']) && !empt
                             }
                         }
 
-                        // Calcular y mostrar K/D Ratio
                         if (isset($statsData['total_kills']) && isset($statsData['total_deaths']) && $statsData['total_deaths'] > 0) {
                             $kdRatio = round($statsData['total_kills'] / $statsData['total_deaths'], 2);
                             echo '<div class="stat-card">';
@@ -309,7 +279,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['map_name']) && !empt
                             echo '</div>';
                         }
 
-                        // Calcular y mostrar precisión
                         if (isset($statsData['total_shots_fired']) && isset($statsData['total_shots_hit']) && $statsData['total_shots_fired'] > 0) {
                             $accuracy = round(($statsData['total_shots_hit'] / $statsData['total_shots_fired']) * 100, 2);
                             echo '<div class="stat-card">';
@@ -318,7 +287,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['map_name']) && !empt
                             echo '</div>';
                         }
 
-                        // Calcular y mostrar porcentaje de headshots
                         if (isset($statsData['total_kills']) && isset($statsData['total_kills_headshot']) && $statsData['total_kills'] > 0) {
                             $headshotPercentage = round(($statsData['total_kills_headshot'] / $statsData['total_kills']) * 100, 2);
                             echo '<div class="stat-card">';
@@ -402,3 +370,4 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['map_name']) && !empt
     </div>
 </body>
 </html>
+            

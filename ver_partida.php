@@ -502,7 +502,7 @@ try {
 
 <header>
     <div class="logo">
-        <img src="img/logo.png" alt="Logo"> 
+        <img src="/img/logo-removebg-preview.png" alt="Logo"> 
     </div>
     <div class="navigation">
         <a href="principal.php" class="active"><i class="fas fa-home"></i> Inicio</a>

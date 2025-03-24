@@ -14,26 +14,21 @@ $esCoach = isset($_SESSION["role"]) && $_SESSION["role"] === 'coach';
 $mensaje = "";
 $error = "";
 
-// Procesar el formulario cuando se envía
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Obtener y validar los datos del formulario
     $titulo = trim($_POST["titulo"] ?? "");
     $mapa = trim($_POST["mapa"] ?? "");
     $fecha = trim($_POST["fecha"] ?? date("Y-m-d"));
     $resultado = trim($_POST["resultado"] ?? "");
     
-    // Validar que los campos necesarios no estén vacíos
     if (empty($titulo) || empty($mapa) || empty($fecha)) {
         $error = "Por favor, completa todos los campos requeridos.";
     } else {
         try {
-            // Preparar la consulta SQL para insertar la partida
             $stmt = $pdo->prepare("INSERT INTO Partida (idUsuario, titulo, mapa, fecha, resultado) VALUES (?, ?, ?, ?, ?)");
             $stmt->execute([$idUsuario, $titulo, $mapa, $fecha, $resultado]);
             
             $mensaje = "Partida registrada correctamente.";
             
-            // Opcional: redirigir a la página de partidas después de registrar
             header("Location: partidas.php?mensaje=Partida registrada correctamente");
             exit();
         } catch (PDOException $e) {
@@ -42,7 +37,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// Lista de mapas para el selector (puedes personalizarla)
 $mapas = [
     "Ancient", "Anubis", "Dust II", "Inferno", "Mirage", "Nuke", "Overpass", "Vertigo"
 ];
@@ -67,7 +61,7 @@ $mapas = [
             --accent-color: #ff5722;
             --accent-hover: #ff784e;
             --border-color: #333;
-            --box- shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             --transition-speed: 0.3s;
         }
 

@@ -26,27 +26,22 @@ function consultaPass($user, $pass) {
         return "ERROR: Contraseña incorrecta.";
     }
 
-    // Almacenar datos del usuario en la sesión
     $_SESSION["username"] = $user;
     $_SESSION["idUsuario"] = $registro["idUsuario"];
-    $_SESSION["usuario_id"] = $registro["idUsuario"]; // Añadido para compatibilidad con perfil.php
+    $_SESSION["usuario_id"] = $registro["idUsuario"]; 
     
-    // Verificar y almacenar el rol del usuario
     if (isset($registro["role"])) {
         $_SESSION["role"] = $registro["role"];
     } else {
-        // Rol predeterminado si no existe en la base de datos
         $_SESSION["role"] = "usuario";
     }
     
-    // Verificar si hay una página a la que redirigir después del login
     if (isset($_SESSION['redirect_after_login'])) {
         $redirect_url = $_SESSION['redirect_after_login'];
-        unset($_SESSION['redirect_after_login']); // Limpiar la variable de sesión
+        unset($_SESSION['redirect_after_login']); 
         header("Location: $redirect_url");
         exit();
     } else {
-        // Comportamiento por defecto: redirigir a principal.php
         header("Location: principal.php");
         exit();
     }
